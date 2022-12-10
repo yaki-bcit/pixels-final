@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useState } from 'react'
 import Router, { useRouter } from 'next/router'
 import Link from 'next/link'
+
+import { useSession } from "next-auth/react"
 
 import SiteNavigation from "../components/SiteNavigation"
 import Pixels from '../components/Pixels'
@@ -24,6 +25,10 @@ export default function Home({ posts }) {
   const [userPosts, setUserPosts] = useState(posts)
 
   const handleSave = async () => {
+    if (!session) {
+      router.push('/api/auth/signin')
+      return
+    }
     const pixels = [... pixelColors]
     const { data } = await axios.post('/api/post', {
       pixels
@@ -88,8 +93,7 @@ export default function Home({ posts }) {
   )
 }
 
-export async function getServerSideProps() {
-
+export async function getServerSideProps(context) {
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: 'asc',
