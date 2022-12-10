@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: ['avatars.githubusercontent.com'],
   },
+  secret: process.env.NEXT_PUBLIC_SECRET,
 }
 
 module.exports = nextConfig
